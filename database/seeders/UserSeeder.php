@@ -93,11 +93,25 @@ class UserSeeder extends Seeder
             ],
         ];
 
+        $userRoles = [
+            'admin@dinsos.blitarkab.go.id' => ['administrator'],
+            'kadis@dinsos.blitarkab.go.id' => ['pimpinan', 'pejabat_penandatangan'],
+            'kabid.linjamsos@dinsos.blitarkab.go.id' => ['pejabat_penandatangan'],
+            'petugas.layanan@dinsos.blitarkab.go.id' => ['petugas_dinsos'],
+            'petugas.rehsos@dinsos.blitarkab.go.id' => ['petugas_dinsos'],
+            'operator.kanigoro@blitarkab.go.id' => ['operator_daerah'],
+            'warga@gmail.com' => ['masyarakat'],
+        ];
+
         foreach ($users as $userData) {
-            User::updateOrCreate(
+            $user = User::updateOrCreate(
                 ['email' => $userData['email']],
                 $userData
             );
+
+            if (isset($userRoles[$user->email])) {
+                $user->syncRoles($userRoles[$user->email]);
+            }
         }
     }
 }
